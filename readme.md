@@ -1,15 +1,18 @@
 ### Description
-P07_00_00 Raindrop Bob   
-A plant watering system for my house plants while I'm away. 
-* Soil moisture sensing with homebrew sensors
-* watering managed with 3x DC peristaltic pumps
-* Reservoir monitoring (tbd)
-* Data logging (tbd) 
+P07_00_00 Raindrop Bob  
+Raindrop Bob is a domotics project for watering and monitoring plant moisture for house plants. The project incorporates aspects of soil moisture sensing, automatic irrigation, water level sensing and data logging. This project is designed to address issues of maintaining plant health while I’m away. 
+ * Soil moisture sensing with homebrew sensors
+ * watering managed with 3x DC peristaltic pumps
+ * Reservoir monitoring (tbd)
+ * Data logging (tbd) 
 
+### Notes to user
+ * Project Project documented at https://kionokitse.wordpress.com/raindrop-bob/
+ 
 ### Hardware
-* Arduino Pro Mini clone ATmega328 5V
-* FTDI Basic
-* 3x 2N4400 NPN Transistor
+ * Arduino Pro Mini clone ATmega328 5V
+ * FTDI Basic
+ * 3x 2N4400 NPN Transistor
  
 ### Progress log 
  * 2020-05-23 Got most of the hardware for the project 
@@ -32,16 +35,13 @@ A plant watering system for my house plants while I'm away.
  
 
 pseudo code P08_00_00
-> Wake up
-> LED on (optional)
-> Check battery level
-> Read soil moisture sensor
-> Send battery bevel
-> Send moisture leval
-> Format (B1024M600)
-> LED off (optional)
-> Go to sleep
-
+Setup SD card and global variables
+1. Read soil moisture sensors
+1. Read reservoir sensor
+1. Record data to SD card
+1. Check if values are within thresholds
+1. Activate pumps if required
+1. Delay for 1 hour
  
 ### What's next
 
