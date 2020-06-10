@@ -8,7 +8,22 @@ Raindrop Bob is a domotics project for watering and monitoring plant moisture fo
 
 ### Notes to user
  * Project documented at https://kionokitse.wordpress.com/raindrop-bob/
- 
+
+#### Folders
+ * P07_00_00-Main
+	* Main program with all the functions
+	* Not fully operational yet
+ * P07_00_00-TestSD
+	* Testing SD card functions. Write a message to the txt file
+ * P07_00_00-TestSensor
+	* Test diy soil moisture sensor
+ * P07_00_00-CalibrateSensors
+	* Every hour read sensors and save data to SD card in CSV format	
+ * P07_00_00-TestSensorsLive
+	* Live stream data from the soil moisture sensor
+	* Save data to SD card in CSV format
+	* Transmit data over serial connection
+
 ### Hardware
  * Arduino Pro Mini clone ATmega328 5V
  * FTDI Basic
@@ -32,6 +47,8 @@ Raindrop Bob is a domotics project for watering and monitoring plant moisture fo
  * 2020-06-07 Shielding reservoir sensor wires it's a pia
  * 2020-06-07 Capacitive reservoir sensor is working calibration needed 
  * 2020-06-08 Add project to GitHub
+ * 2020-06-09 Added TestSD project 
+ * 2020-06-09 Added TestSensor project
  
 
 pseudo code P08_00_00
@@ -44,6 +61,7 @@ Setup SD card and global variables
  1. Delay for 1 hour
  
 ### Notebook 
+ * DIY Soil moisture sensor https://www.instructables.com/id/DIY-SOIL-MOISTURE-SENSOR-CHEAP-YET-ACCURATE-/
  * DIY Capacitive water level sensor https://www.instructables.com/id/Building-a-Capacitive-Liquid-Sensor/
  * DIY Arduino SD card reader https://www.instructables.com/id/Cheap-Arduino-SD-Card-Reader/
  * DIY SD card Reader https://nathan.chantrell.net/20111128/diy-micro-sd-shield-for-arduino/

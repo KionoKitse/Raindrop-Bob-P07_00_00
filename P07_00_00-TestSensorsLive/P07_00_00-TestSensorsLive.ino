@@ -120,3 +120,12 @@ void CheckSensors() {
     Serial.print(Sensor04Val);
     Serial.print(" Write: ");
 }
+
+/*
+***** ROLL THE CREDITS *****
+>> WriteToSD <<
+ * SD tutorial example sketch   https://www.arduino.cc/en/Tutorial/ReadWrite
+ * DIY Arduino SD card reader   https://www.instructables.com/id/Cheap-Arduino-SD-Card-Reader/
+ * DIY SD card Reader           https://nathan.chantrell.net/20111128/diy-micro-sd-shield-for-arduino/
+***** Thanks everyone! ***** 
+ */

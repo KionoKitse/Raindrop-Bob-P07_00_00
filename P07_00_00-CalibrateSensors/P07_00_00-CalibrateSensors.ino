@@ -3,7 +3,7 @@
    Project: P07_00_00 Raindrop Bob
    Schematic: P07_00_00-CalibrateSensors.fzz
    
-   Description: Every hour take five sample measuments from the four 
+   Description: Every hour take five sample measurements from the four 
    moisture sensors. Save that data to the SD card in CSV format for 
    review latter.
 */
@@ -141,3 +141,12 @@ void CheckSensors() {
   Sensor03Val = TotalSensor03 / 5;
   Sensor04Val = TotalSensor04 / 5;
 }
+
+/*
+***** ROLL THE CREDITS *****
+>> WriteToSD <<
+ * SD tutorial example sketch   https://www.arduino.cc/en/Tutorial/ReadWrite
+ * DIY Arduino SD card reader   https://www.instructables.com/id/Cheap-Arduino-SD-Card-Reader/
+ * DIY SD card Reader           https://nathan.chantrell.net/20111128/diy-micro-sd-shield-for-arduino/
+***** Thanks everyone! ***** 
+ */
