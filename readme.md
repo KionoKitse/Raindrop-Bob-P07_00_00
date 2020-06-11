@@ -49,6 +49,7 @@ Raindrop Bob is a domotics project for watering and monitoring plant moisture fo
  * 2020-06-08 Add project to GitHub
  * 2020-06-09 Added TestSD project 
  * 2020-06-09 Added TestSensor project
+ * 2020-06-10 Adding gradient markings on reservoir
  
 
 pseudo code P08_00_00
