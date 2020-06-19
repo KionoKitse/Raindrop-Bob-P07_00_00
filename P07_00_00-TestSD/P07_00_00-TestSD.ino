@@ -14,6 +14,13 @@
 #include <SD.h>
 const int chipSelect = 10;
 File myFile;
+
+//Global variables
+int Sensor01Val = 1;
+int Sensor02Val = 2;
+int Sensor03Val = 3;
+int Sensor04Val = 4;
+
 void setup() {
   Serial.begin(9600);
 
@@ -32,6 +39,14 @@ void loop() {
   if (myFile) {
     Serial.println("Writing to P7_0_0.csv...");
     Serial.print("Testing SD Write");
+
+    myFile.print(Sensor01Val);
+    myFile.print(",");
+    myFile.print(Sensor02Val);
+    myFile.print(",");
+    myFile.print(Sensor03Val);
+    myFile.print(",");
+    myFile.println(Sensor04Val);
 
     // close the file:
     myFile.close();
