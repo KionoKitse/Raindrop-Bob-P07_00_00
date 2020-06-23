@@ -78,6 +78,7 @@ Setup SD card and global variables
  * DIY Capacitive water level sensor https://www.instructables.com/id/Building-a-Capacitive-Liquid-Sensor/
  * DIY Arduino SD card reader https://www.instructables.com/id/Cheap-Arduino-SD-Card-Reader/
  * DIY SD card Reader https://nathan.chantrell.net/20111128/diy-micro-sd-shield-for-arduino/
+ * Try sleep https://folk.uio.no/jeanra/Microelectronics/ArduinoWatchdog.html
  
 
  
