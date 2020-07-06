@@ -57,6 +57,9 @@ Raindrop Bob is a domotics project for watering and monitoring plant moisture fo
  * 2020-06-14 putting together project on perfboard breadboarded sensors are unreliable
  * 2020-06-15 Soldering connections on perfboard
  * 2020-06-16 Testing connections VCC-GND short detected
+ * 2020-07-04 Set moisture level thresholds
+ * 2020-07-04 Uploaded Main.ino
+ 
 
 ### What's next
  * Install components on perfboard

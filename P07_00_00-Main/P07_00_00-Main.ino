@@ -27,6 +27,14 @@ int Sensor02Val;
 int Sensor03Val;
 int Sensor04Val;
 long ReservoirVal;
+int Plant01Low = 40;
+int Plant02Low = 131;
+int Plant03Low = 170;
+int Plant04Low = 440;
+int PumpDelay = 5000;
+bool Pump01 = 0;
+bool Pump02 = 0;
+bool Pump03 = 0;
 
 //Define pins
 #define PwrSensor01 9  //Pin to turn on moisture sensor 01
@@ -70,10 +78,11 @@ void setup() {
   //Check SD card function
   Serial.print("Initializing SD card...");
   if (!SD.begin(chipSelect)) {
-    Serial.println("initialization failed!");
+    Serial.println("Failed!");
     while (1);
   }
-  Serial.println("initialization done.");
+  Serial.println("Done.");
+  delay(100);
 
   //Write note to SD
   myFile = SD.open("P7_0_0.CSV", FILE_WRITE);
@@ -81,6 +90,7 @@ void setup() {
   // if the file opened okay, write to it:
   if (myFile) {
     Serial.print("Writing to test.txt...");
+    delay(100);
     myFile.println("Reboot");
     // close the file:
     myFile.close();
@@ -95,8 +105,6 @@ void setup() {
   WDTCSR |= (1<<WDCE) | (1<<WDE);
   WDTCSR = 1<<WDP0 | 1<<WDP3; 
   WDTCSR |= _BV(WDIE);
-
-
 }
 
 void loop() {
@@ -110,10 +118,15 @@ void loop() {
     }
     else
     {
-      //Take a measurement and save data
+      //Take a measurement
       CheckSensors();
+      
+      //Water plants
+      WaterPlants();
+      
+      //Write data to SD
       WriteToSD();
-      Count = 0;
+      Count = 0;     
     }
 
     f_wdt = 0;
@@ -126,22 +139,35 @@ void loop() {
   //MotorTest();
   
 }
-//Function to check motors
-void MotorTest() {
-  digitalWrite(Motor01, HIGH);
-  delay(1000);
-  digitalWrite(Motor01, LOW);
-  delay(1000);
-
-  digitalWrite(Motor02, HIGH);
-  delay(1000);
-  digitalWrite(Motor02, LOW);
-  delay(1000);
-
-  digitalWrite(Motor03, HIGH);
-  delay(1000);
-  digitalWrite(Motor03, LOW);
-  delay(1000);
+//Function to run pumps if moisture level is low
+void WaterPlants(){
+   Pump01 = 0;
+   Pump02 = 0;
+   Pump03 = 0;
+  //Water plant 01
+  if (Sensor01Val < Plant01Low)
+  {
+    digitalWrite(Motor01, HIGH);
+    delay(PumpDelay);
+    digitalWrite(Motor01, LOW);
+    Pump01 = 1;
+  }
+  //Water plant 02
+  if (Sensor02Val < Plant02Low)
+  {
+    digitalWrite(Motor02, HIGH);
+    delay(PumpDelay);
+    digitalWrite(Motor02, LOW);
+    Pump02 = 1;
+  }
+  //Water plant 03 & Plant 4
+  if (Sensor03Val < Plant03Low)
+  {
+    digitalWrite(Motor03, HIGH);
+    delay(PumpDelay);
+    digitalWrite(Motor03, LOW);
+    Pump03 = 1;
+  }
 }
 
 //Function to write data to SD card
@@ -160,7 +186,13 @@ void WriteToSD() {
     myFile.print(",");
     myFile.print(Sensor04Val);
     myFile.print(",");
-    myFile.println(ReservoirVal);
+    myFile.print(ReservoirVal);
+    myFile.print(",");
+    myFile.print(Pump01);
+    myFile.print(",");
+    myFile.print(Pump02);
+    myFile.print(",");
+    myFile.println(Pump03);
 
     // close the file:
     myFile.close();
@@ -246,6 +278,8 @@ ISR(WDT_vect)
 //Enters the arduino into sleep mode.
 void enterSleep(void)
 {
+  Serial.println("sleep");
+  delay(10);
   set_sleep_mode(SLEEP_MODE_PWR_SAVE);   /* EDIT: could also use SLEEP_MODE_PWR_DOWN for lowest power consumption. */
   sleep_enable();
   
