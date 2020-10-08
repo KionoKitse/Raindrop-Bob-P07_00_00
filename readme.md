@@ -2,7 +2,7 @@
 P07_00_00 Raindrop Bob  
 Raindrop Bob is a domotics project for watering and monitoring plant moisture for house plants. The project incorporates aspects of soil moisture sensing, automatic irrigation, water level sensing and data logging. This project is designed to address issues of maintaining plant health while I’m away. 
  * Soil moisture sensing with homebrew sensors
- * watering managed with 3x DC peristaltic pumps
+ * Watering managed with 3x DC peristaltic pumps
  * Reservoir monitoring (tbd)
  * Data logging (tbd) 
 
