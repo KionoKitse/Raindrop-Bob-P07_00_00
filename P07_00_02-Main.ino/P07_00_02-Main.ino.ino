@@ -1,12 +1,12 @@
 /*
-   P07_00_00-Main
+   P07_00_00-TestSensorsLive
    Project: P07_00_00 Raindrop Bob
+   Schematic: P07_00_00-TestSensorsLive.fzz
+
+   Description: Stream soil moisture sensor values over serial and
+   save to SD for graphing.
+
 */
-//Sleep mode
-#include <avr/sleep.h>
-#include <avr/power.h>
-#include <avr/wdt.h>
-volatile int f_wdt = 1;
 
 //Include libraries for SD functions
 #include <SPI.h>
@@ -14,11 +14,11 @@ volatile int f_wdt = 1;
 const int chipSelect = 10;
 File myFile;
 
-#include <CapacitiveSensor.h>
-#define Send 3 //Reservoir sensor send
-#define Rec 2  //Reservoir sensor recieve
-CapacitiveSensor Reservoir = CapacitiveSensor(Send, Rec);
-
+//Global variables
+int Sensor01Val;
+int Sensor02Val;
+int Sensor03Val;
+int Sensor04Val;
 
 //Global variables
 int Sensor01ValPre;
@@ -28,7 +28,8 @@ int Sensor02ValPost;
 int Plant01Low = 500;
 int Plant02Low = 500;
 bool Pump01 = 0;
-int PumpDelay = 15000;
+int PumpDelay = 60000;
+bool HardExit = false;
 
 //Define pins
 #define PwrSensor01 9  //Pin to turn on moisture sensor 01
@@ -42,7 +43,6 @@ int PumpDelay = 15000;
 #define Motor01 A0  //Pin to turn on motor 01
 #define Motor02 A1  //Pin to turn on motor 02
 #define Motor03 A2  //Pin to turn on motor 03
-
 
 void setup() {
   Serial.begin(9600);
@@ -72,93 +72,93 @@ void setup() {
   //Check SD card function
   Serial.print("Initializing SD card...");
   if (!SD.begin(chipSelect)) {
-    Serial.println("Failed!");
+    Serial.println("initialization failed!");
     while (1);
   }
-  Serial.println("Done.");
-  delay(100);
+  Serial.println("initialization done.");
 
-  Error();
+  //Check sensors
+  Serial.println("Check sensors");
+  digitalWrite(PwrSensor01, HIGH);
+  delay(200);
+  Sensor01ValPre = analogRead(Sensor01);
+  digitalWrite(PwrSensor01, LOW);
 
-  //Write note to SD
-  myFile = SD.open("P7_0_0.CSV", FILE_WRITE);
+  digitalWrite(PwrSensor02, HIGH);
+  delay(200);
+  Sensor02ValPre = analogRead(Sensor02);
+  digitalWrite(PwrSensor02, LOW);
 
-  // if the file opened okay, write to it:
-  if (myFile) {
-    Serial.print("Writing to test.txt...");
-    delay(100);
-    myFile.println("Reboot");
-    // close the file:
-    myFile.close();
-    Serial.println("done.");
-  } else {
-    // if the file didn't open, print an error:
-    Serial.println("error opening test.txt");
+  Serial.print(Sensor01ValPre);
+  Serial.print(",");
+  Serial.println(Sensor02ValPre);
+
+  WaterPlants();
+
+  //Check sensors again
+  Serial.println("Check sensors again");
+  digitalWrite(PwrSensor01, HIGH);
+  delay(200);
+  Sensor01ValPost = analogRead(Sensor01);
+  digitalWrite(PwrSensor01, LOW);
+
+  digitalWrite(PwrSensor02, HIGH);
+  delay(200);
+  Sensor02ValPost = analogRead(Sensor02);
+  digitalWrite(PwrSensor02, LOW);
+  
+  Serial.print(Sensor01ValPost);
+  Serial.print(",");
+  Serial.println(Sensor02ValPost);
+
+  Serial.println("Write to SD");
+  WriteToSD();
+  if (HardExit)
+  {
+    Error();
   }
-
-
-  TestMotors();
-
-
 }
 
 void loop() {
-  //Read all sensors
-  Sensor01ValPre = CheckSensors(Sensor01, PwrSensor01);
-  Sensor02ValPre = CheckSensors(Sensor02, PwrSensor02);
-  Serial.println("HI");
-
-  //Water plants if needed
-  WaterPlants();
-
-  Sensor01ValPost = CheckSensors(Sensor01, PwrSensor01);
-  Sensor02ValPost = CheckSensors(Sensor02, PwrSensor02);
-
-  //Record for log
-  WriteToSD();
 }
-
-
-
-
 //Function to run pumps if moisture level is low
 void WaterPlants() {
   Pump01 = 0;
+
   //Water plant 01 & 02
   if (Sensor01ValPre < Plant01Low)
   {
-    Serial.println("01");
+    Serial.print("Plant1 low: ");
+    Serial.println(Sensor01ValPre);
+  }
+  if (Sensor02ValPre < Plant02Low)
+  {
+    Serial.print("Plant2 low: ");
+    Serial.println(Sensor02ValPre);
   }
   if ((Sensor01ValPre < Plant01Low) || (Sensor02ValPre < Plant02Low))
   {
-
-    while ((Sensor01ValPost < Plant01Low) || (Sensor02ValPost < Plant02Low))
-    {
-      digitalWrite(Motor01, HIGH);
-      delay(1000);//delay(PumpDelay);
-      digitalWrite(Motor01, LOW);
-
-      Sensor01ValPost = CheckSensors(Sensor01, PwrSensor01);
-      Sensor02ValPost = CheckSensors(Sensor02, PwrSensor02);
-      Serial.print(Sensor01ValPost);
-      Serial.print(",");
-      Serial.println(Sensor02ValPost);
-    }
-
+    Serial.println("A plant needs water!");
     Pump01 = 1;
-    delay(60000);
-  }
+    HardExit = true;
 
+    //Turn on pumps for a bit
+    digitalWrite(Motor01, HIGH);
+    delay(120000);
+    digitalWrite(Motor01, LOW);
+
+    Serial.println("Pumps off: wait 2 min");
+    delay(120000);
+  }
 }
 
 //Function to write data to SD card
 void WriteToSD() {
   //Open File
-  myFile = SD.open("P7_0_0.CSV", FILE_WRITE);
+  myFile = SD.open("P7_0_0L.csv", FILE_WRITE);
 
   // if the file opened okay, write to it:
   if (myFile) {
-    Serial.println("Writing to P7_0_0.csv...");
     myFile.print(Sensor01ValPre);
     myFile.print(",");
     myFile.print(Sensor02ValPre);
@@ -167,57 +167,17 @@ void WriteToSD() {
     myFile.print(",");
     myFile.print(Sensor01ValPost);
     myFile.print(",");
-    myFile.println(Sensor02ValPost);
+    myFile.print(Sensor02ValPost);
+    myFile.print(",");
+    myFile.println(HardExit);
 
     // close the file:
     myFile.close();
     Serial.println("done.");
   } else {
     // if the file didn't open, print an error:
-    Serial.println("error opening test.txt");
+    Serial.println("error opening P7_0_0L.csv");
   }
-}
-
-
-int CheckSensors(int Sensor, int SensorPower) {
-  int DelayTime = 200;
-  int Result;
-  digitalWrite(SensorPower, HIGH);
-  delay(DelayTime);
-  Result = analogRead(Sensor);
-  digitalWrite(SensorPower, LOW);
-
-
-  Serial.println(Result);
-  digitalWrite(PwrSensor01, HIGH);
-  delay(200);
-  int Sensor01Val = analogRead(Sensor01);
-  digitalWrite(PwrSensor01, LOW);
-  Serial.print(">>>>>");
-  Serial.print(Sensor01Val);
-  return Result;
-
-}
-
-void TestMotors()
-{
-  Serial.println("Motor 1");
-  digitalWrite(Motor01, HIGH);
-  delay(1000);
-  digitalWrite(Motor01, LOW);
-  delay(1000);
-
-  Serial.println("Motor 2");
-  digitalWrite(Motor02, HIGH);
-  delay(1000);
-  digitalWrite(Motor02, LOW);
-  delay(1000);
-
-  Serial.println("Motor 3");
-  digitalWrite(Motor03, HIGH);
-  delay(1000);
-  digitalWrite(Motor03, LOW);
-  delay(1000);
 }
 void Error() {
   pinMode(4, OUTPUT);
@@ -230,12 +190,12 @@ void Error() {
   }
 }
 
+
 /*
 ***** ROLL THE CREDITS *****
   >> WriteToSD <<
    SD tutorial example sketch   https://www.arduino.cc/en/Tutorial/ReadWrite
    DIY Arduino SD card reader   https://www.instructables.com/id/Cheap-Arduino-SD-Card-Reader/
    DIY SD card Reader           https://nathan.chantrell.net/20111128/diy-micro-sd-shield-for-arduino/
-   DIY capacitive sensor        https://www.instructables.com/id/Building-a-Capacitive-Liquid-Sensor/
 ***** Thanks everyone! *****
 */

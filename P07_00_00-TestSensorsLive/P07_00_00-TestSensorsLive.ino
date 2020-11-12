@@ -21,14 +21,14 @@ int Sensor03Val;
 int Sensor04Val;
 
 //Define pins
-#define PwrSensor01 3  //Pin to turn on moisture sensor 01
-#define PwrSensor02 4  //Pin to turn on moisture sensor 02
-#define PwrSensor03 5  //Pin to turn on moisture sensor 03
+#define PwrSensor01 9  //Pin to turn on moisture sensor 01
+#define PwrSensor02 8  //Pin to turn on moisture sensor 02
+#define PwrSensor03 7  //Pin to turn on moisture sensor 03
 #define PwrSensor04 6  //Pin to turn on moisture sensor 04
-#define Sensor01 A0  //Pin to read moisture sensor 01
-#define Sensor02 A1  //Pin to read moisture sensor 02
-#define Sensor03 A2  //Pin to read moisture sensor 03
-#define Sensor04 A3  //Pin to read moisture sensor 04
+#define Sensor01 A7  //Pin to read moisture sensor 01
+#define Sensor02 A6  //Pin to read moisture sensor 02
+#define Sensor03 A5  //Pin to read moisture sensor 03
+#define Sensor04 A4  //Pin to read moisture sensor 04
 
 void setup() {
   Serial.begin(9600);
